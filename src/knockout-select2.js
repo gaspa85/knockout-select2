@@ -15,13 +15,14 @@
 
     var dataBindingName = bindingName + 'Data';
 
-    function triggerChangeQuietly(element, binding) {
+    function triggerChangeQuietly(element, binding, value) {
         var isObservable = ko.isObservable(binding);
         var originalEqualityComparer;
         if (isObservable) {
             originalEqualityComparer = binding.equalityComparer;
             binding.equalityComparer = function() { return true; };
         }
+        $(element).val(value);
         $(element).trigger('change');
         if (isObservable) {
             binding.equalityComparer = originalEqualityComparer;
@@ -45,12 +46,12 @@
         if (ko.isObservable(allBindings.value)) {
             subscription = allBindings.value.subscribe(function(value) {
                 if (ignoreChange) return;
-                triggerChangeQuietly(element, this._target || this.target);
+                triggerChangeQuietly(element, this._target || this.target, value);
             });
         } else if (ko.isObservable(allBindings.selectedOptions)) {
             subscription = allBindings.selectedOptions.subscribe(function(value) {
                 if (ignoreChange) return;
-                triggerChangeQuietly(element, this._target || this.target);
+                triggerChangeQuietly(element, this._target || this.target, value);
             });
         }
 
